@@ -9,7 +9,7 @@ router.get('/all', async (req, res) => {
 });
 
 // Get Emoji by ID
-router.get('/:id', async (req, res) => { 
+router.get('/search/:id', async (req, res) => { 
   const { id } = req.params
   const emojiData = await Emoji.findOne({where: {emoji_id: id}})
   res.send(JSON.stringify(emojiData, 4))

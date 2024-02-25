@@ -21,7 +21,7 @@ app.use('/static', express.static(__dirname + '/public'));
 
 const migration = async () => {
   try {
-    await sequelize.sync({ force: false })
+    await sequelize.sync({ force: true })
     console.log('[SUCCESS] Database migration success')
     insertEmojiMockData()
   } catch(error){

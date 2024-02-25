@@ -19,7 +19,7 @@ router.post('/all', async (req, res) => {
   res.send(JSON.stringify(result, 4))
 })
 
-router.get('/:id', async (req, res) => { 
+router.get('/search/:id', async (req, res) => { 
   console.log('[Post] Get Request :id', req.params)
   const { id } = req.params
   const postData = await Post.findOne({where: {post_id: id}})
