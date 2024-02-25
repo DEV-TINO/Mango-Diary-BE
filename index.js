@@ -25,7 +25,7 @@ const migration = async () => {
     console.log('[SUCCESS] Database migration success')
     insertEmojiMockData()
   } catch(error){
-    console.error('[ERROR] Cannot Migrate Database')
+    console.error(`[ERROR] Cannot Migrate Database : ${error}`)
   }
 }
 
