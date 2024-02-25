@@ -19,6 +19,6 @@
     "dev": "nodemon index.js localhost 3333",
     "start": "node index.js"
   },
-  "author": "",
+  "author": "Sungjun Kim",
   "license": "ISC"
 }
