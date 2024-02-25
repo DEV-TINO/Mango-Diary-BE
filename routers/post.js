@@ -1,22 +1,68 @@
 const express = require('express');
 const router = express.Router();
 const { Post } = require('../models/Post.js')
-const { Emoji } = require('../models/Emoji.js')
+const fs = require('fs')
+const multer = require('multer')
+const path = require('path')
+
+
+const createDirectory = ({post_type: post_type}) => {
+  const staticPath = path.join(__dirname, 'public')
+  const postPath = path.join(staticPath, post_type)
+  try {
+    if (!fs.existsSync(postPath)) {
+      fs.mkdirSync(postPath);
+      console.log(`${postPath} 폴더가 생성되었습니다.`);
+    } else {
+      console.log(`${postPath} 폴더는 이미 존재합니다.`);
+    }
+    return postPath
+  } catch (error) {
+    console.error(`폴더 생성 중 오류가 발생했습니다: ${error}`);
+    return false
+  }
+}
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const input = {
+      'post_type': req.body.post_type,
+    }
+    // 디렉토리 생성
+    const dir = createDirectory(input);
+    if (dir) {
+      console.log('[storage] generated dir', dir)
+      // 콜백으로 디렉토리 경로 전달
+      cb(null, dir);
+    } else {
+      cb(new Error('Directory Creation Error'), '')
+    }
+  },
+  filename: function (req, file, cb) {
+    // 파일 이름 설정. 여기서도 동적으로 설정 가능
+    cb(null, file.originalname + '-' + Date.now());
+  }
+})
+
+const upload = multer({ storage: storage })
+
 
 router.post('/all', async (req, res) => { 
-  const post_month = req.body.post_month
-  const post_year = req.body.post_year
-  const post_type = req.body.post_type
-
-  const allPostData = await Post.findAll({where: {post_month: post_month, post_year: post_year, post_type: post_type}})
-  const result = allPostData.map((data) => {
-    return {
-      'post_id': data.post_id,
-      'post_date': data.post_date,
-      'post_emoji_id': data.post_emoji_id,
-    }
-  })
-  res.send(JSON.stringify(result, 4))
+  try {
+    const { post_month, post_year, post_type } = req.body
+    const allPostData = await Post.findAll({where: {post_month: post_month, post_year: post_year, post_type: post_type}})
+    const result = allPostData.map((data) => {
+      return {
+        'post_id': data.post_id,
+        'post_date': data.post_date,
+        'post_emoji_id': data.post_emoji_id,
+      }
+    })
+    res.send(result)
+  } catch (error) {
+    console.error(`[ERROR] Cannot Get All Post Data : ${error}`)
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 })
 
 router.get('/search/:id', async (req, res) => { 
@@ -26,27 +72,19 @@ router.get('/search/:id', async (req, res) => {
   res.send(JSON.stringify(postData, 4))
 })
 
-router.post('/create', async (req, res) => { 
-  console.log('[Post] Create Request >> req.body', req.body)
-  const post_type = req.body.post_type
-  const post_year = req.body.post_year
-  const post_month = req.body.post_month
-  const post_date = req.body.post_date
-  const post_emoji_id = req.body.post_emoji_id
-  const post_content = req.body.post_content
-
-  if (req.body == {}) {
+router.post('/create', upload.single('post_upload_image'),async (req, res) => { 
+  const response = {}
+  if (Object.keys(req.body).length === 0) {
     response['success'] = false
     response['post_id'] = false
+    console.error('[ERROR] Request Body is Empty', req.body)
     res.send(JSON.stringify(response, 4))
     return 
   }
-
-  const post_upload_image = await Emoji.findOne({where: {emoji_id: post_emoji_id}})?.emoji_image ?? 'error'
-  console.log('post_upload_image', post_upload_image)
-  const response = {}
-
+  
   try {
+    const { post_type, post_year, post_month, post_date, post_emoji_id, post_content } = req.body
+    const post_upload_image = req?.file ?? false
     const post = await Post.create({
       'post_type': post_type,
       'post_year': post_year,
@@ -54,15 +92,25 @@ router.post('/create', async (req, res) => {
       'post_date': post_date,
       'post_emoji_id': post_emoji_id,
       'post_content': post_content,
-      'post_upload_image': post_upload_image
+      'post_upload_image': 'no image'
     })
+
+    if (post_upload_image !== false) {
+      const imagePath = String(req.file.path).replace('public', 'static')
+      console.log('[Post] Create Request >> imagePath', imagePath)
+      await post.update({
+        'post_upload_image': imagePath
+      })
+    }
+
     response['success'] = true
     response['post_id'] = post.post_id
   } catch(error){
     response['success'] = false
     response['post_id'] = false
+    console.error(`[ERROR] Cannot Create Post : ${error}`)
   }
-  res.send(JSON.stringify(response, 4))
+  res.send(response)
 });
 
 module.exports = router;
