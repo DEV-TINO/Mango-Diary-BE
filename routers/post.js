@@ -50,6 +50,7 @@ const upload = multer({ storage: storage })
 router.post('/all', async (req, res) => { 
   try {
     const { post_month, post_year, post_type } = req.body
+    console.log(`[Post] Get All Request >> post_month : ${post_month}, post_year : ${post_year}, post_type : ${post_type}, req_body : ${req.body}` )
     const allPostData = await Post.findAll({where: {post_month: post_month, post_year: post_year, post_type: post_type}})
     const result = allPostData.map((data) => {
       return {
@@ -84,6 +85,9 @@ router.post('/create', upload.single('post_upload_image'),async (req, res) => {
   
   try {
     const { post_type, post_year, post_month, post_date, post_emoji_id, post_content } = req.body
+    console.log(`[Post] Create Request >> post_type : ${post_type}, post_year : ${post_year}, post_month : ${post_month}, post_date : ${post_date}, post_emoji_id : ${post_emoji_id}, post_content : ${post_content}` )
+    console.log(`[Post] Create Request >> req.file : ${req.file}` )
+    console.log(`[Post] Create Request >> req.body : ${req.body}` )
     const post_upload_image = req?.file ?? false
     const post = await Post.create({
       'post_type': post_type,
