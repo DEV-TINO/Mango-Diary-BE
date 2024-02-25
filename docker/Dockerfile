@@ -7,6 +7,7 @@ COPY package-lock.json /code/package-lock.json
 
 RUN npm install
 RUN npm install -g nodemon
+RUN npm install express
 
 COPY . /code
 
