@@ -22,7 +22,7 @@ services:
     image: mango-diary
     volumes:
       - .:/code
-      - app_data:/data
+      - /code/node_modules
     ports:
       - 3333:3333
     depends_on:
