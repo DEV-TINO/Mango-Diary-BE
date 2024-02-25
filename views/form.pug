@@ -1,0 +1,50 @@
+extend layout
+
+block content
+  script(src="/static/js/test.js")
+  h1 Create Post Request
+  form(action="/post/create" method="post")
+    div
+      label(for="post_month") post_month:
+      input(type="text" id="post_month" name="post_month" value="1")
+    div
+      label(for="post_year") post_year:
+      input(type="text" id="post_year" name="post_year" value="2021")
+
+    div 
+      label(for="post_date") post_date:
+      input(type="text" id="post_date" name="post_date" value="23")
+
+    div 
+      label(for="post_emoji_id") post_emoji_id:
+      input(type="text" id="post_emoji_id" name="post_emoji_id" value="a8d746e1-a21b-4a15-a6b8-206b43687df3")
+    
+    div
+      label(for="post_content") post_content:
+      input(type="text" id="post_content" name="post_content", value="TEST")
+
+    div
+      label(for="post_type") post_type:
+      input(type="text" id="post_type" name="post_type", value="MJ")
+
+    button(type="submit") Generate Post Request
+
+  h1 Search Post Request
+  form(action="/post/all" method="post")
+    div
+      label(for="post_month") post_month:
+      input(type="text" id="post_month" name="post_month" value="1")
+    div
+      label(for="post_year") post_year:
+      input(type="text" id="post_year" name="post_year" value="2021")
+
+    div
+      label(for="post_type") post_type:
+      input(type="text" id="post_type" name="post_type", value="MJ")
+
+    button(type="submit") Generate Post Request
+
+  div(id="result")
+
+
+
