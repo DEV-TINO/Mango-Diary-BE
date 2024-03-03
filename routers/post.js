@@ -3,7 +3,8 @@ const router = express.Router();
 const { Post } = require('../models/Post.js')
 const fs = require('fs')
 const multer = require('multer')
-const path = require('path')
+const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 
 
 const createDirectory = ({post_type: post_type}) => {
@@ -40,7 +41,8 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     // 파일 이름 설정. 여기서도 동적으로 설정 가능
-    cb(null, file.originalname + '-' + Date.now());
+    
+    cb(null, uuidv4() + path.extname(file.originalname));
   }
 })
 
