@@ -100,7 +100,11 @@ router.post('/create', upload.single('post_upload_image'),async (req, res) => {
     })
 
     if (post_upload_image !== false) {
-      const imagePath = String(req.file.path).replace('public', 'static')
+      console.log('[Post] Create Request >> post_upload_image', post_upload_image)
+      for (const [key, value] of Object.entries(post_upload_image)) {
+        console.log(`[Post] Create Request upload...image >> ${key} : ${value}`)
+      }
+      const imagePath = String(post_upload_image.path).replace('public', 'static')
       console.log('[Post] Create Request >> imagePath', imagePath)
       await post.update({
         'post_upload_image': imagePath
