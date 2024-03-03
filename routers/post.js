@@ -86,12 +86,6 @@ router.post('/create', upload.single('post_upload_image'),async (req, res) => {
   try {
     const { post_type, post_year, post_month, post_date, post_emoji_id, post_content } = req.body
     console.log(`[Post] Create Request >> post_type : ${post_type}, post_year : ${post_year}, post_month : ${post_month}, post_date : ${post_date}, post_emoji_id : ${post_emoji_id}, post_content : ${post_content}` )
-    console.log(`[Post] Create Request >> req.file : ${req.file}` )
-    console.log('[Post] Create Request >> post_upload_image', req.file)
-    for (const [key, value] of Object.entries(req.file)) {
-      console.log(`[Post] Create Request upload...image >> ${key} : ${value}`)
-    }
-    console.log(`[Post] Create Request >> req.body : ${req.body}` )
     const post_upload_image = req?.file ?? false
     const post = await Post.create({
       'post_type': post_type,
