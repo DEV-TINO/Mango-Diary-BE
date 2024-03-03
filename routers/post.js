@@ -7,11 +7,11 @@ const path = require('path')
 
 
 const createDirectory = ({post_type: post_type}) => {
-  const staticPath = path.join('../', 'public')
+  const staticPath = path.join('../', 'public/uploadImages/')
   const postPath = path.join(staticPath, post_type)
   try {
     if (!fs.existsSync(postPath)) {
-      fs.mkdirSync(postPath);
+      fs.mkdirSync(postPath, { recursive: true });
       console.log(`${postPath} 폴더가 생성되었습니다.`);
     } else {
       console.log(`${postPath} 폴더는 이미 존재합니다.`);
