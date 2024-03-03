@@ -41,7 +41,6 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     // 파일 이름 설정. 여기서도 동적으로 설정 가능
-    
     cb(null, uuidv4() + path.extname(file.originalname));
   }
 })
@@ -100,7 +99,7 @@ router.post('/create', upload.single('post_upload_image'),async (req, res) => {
     })
 
     if (post_upload_image !== false) {
-      const imagePath = String(post_upload_image.path).replace('public', 'static')
+      const imagePath = String(post_upload_image.path).replace('public', 'static').replace('/code', '')
       console.log('[Post] Create Request >> imagePath', imagePath)
       await post.update({
         'post_upload_image': imagePath
