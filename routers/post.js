@@ -7,7 +7,7 @@ const path = require('path')
 
 
 const createDirectory = ({post_type: post_type}) => {
-  const staticPath = path.join('/data', 'uploadImages')
+  const staticPath = '/code/public/images/uploads'
   const postPath = path.join(staticPath, post_type)
   try {
     if (!fs.existsSync(postPath)) {
