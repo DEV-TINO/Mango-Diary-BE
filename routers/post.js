@@ -7,7 +7,7 @@ const path = require('path')
 
 
 const createDirectory = ({post_type: post_type}) => {
-  const staticPath = path.join(__dirname, 'public')
+  const staticPath = path.join('../', 'public')
   const postPath = path.join(staticPath, post_type)
   try {
     if (!fs.existsSync(postPath)) {
